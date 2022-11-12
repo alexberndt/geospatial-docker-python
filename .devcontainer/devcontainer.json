@@ -21,11 +21,19 @@
 			// Set *default* container specific settings.json values on container create.
 			"settings": {
 				"terminal.integrated.profiles.linux": {
-					"bash": {
-						"path": "/usr/bin/bash"
-					},
 					"zsh": {
-						"path": "/usr/bin/zsh"
+						"path": [
+							"/usr/bin/zsh",
+							"/usr/zsh",
+							"/bin/zsh"
+						]
+					},
+					"bash": {
+						"path": [
+							"/usr/bin/bash",
+							"/usr/bash",
+							"/bin/bash"
+						]
 					}
 				},
 				"python.defaultInterpreterPath": "/usr/bin/python",
@@ -66,7 +74,7 @@
 	// 		"onAutoForward": "silent"
 	// },
 	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "pip3 install -r requirements.txt",
+	"postCreateCommand": "poetry update",
 	// Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
 	// "remoteUser": "root"
 }
