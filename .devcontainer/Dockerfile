@@ -1,14 +1,14 @@
 # See here for image contents: https://github.com/microsoft/vscode-dev-containers/blob/v0.202.3/containers/python-3/.devcontainer/base.Dockerfile
 # [Choice] Python version (use -bullseye variants on local arm64/Apple Silicon): 3, 3.9, 3.8, 3.7, 3.6, 3-bullseye, 3.9-bullseye, 3.8-bullseye, 3.7-bullseye, 3.6-bullseye, 3-buster, 3.9-buster, 3.8-buster, 3.7-buster, 3.6-buster
 # ARG VARIANT=3-bullseye
-FROM osgeo/gdal:ubuntu-small-3.5.1
+FROM osgeo/gdal:ubuntu-small-3.5.3
 
 # https://goo.gl/aypXVx
 ARG DEBIAN_FRONTEND=noninteractive
 # https://github.com/mapbox/rasterio#ssl-certs
 ENV CURL_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 
-ENV POETRY_VERSION=1.1.13
+ENV POETRY_VERSION=1.2.0
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
@@ -21,7 +21,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN pip3 install --upgrade pip
 RUN pip install "poetry==$POETRY_VERSION"
 
-# COPY pyproject.toml poetry.lock /workspace/
+WORKDIR /workspaces/geospatial-docker-python/
+
+COPY pyproject.toml .
+COPY poetry.lock .
+
+RUN poetry config virtualenvs.create false
+
+RUN --mount=type=ssh mkdir -p ~/.ssh && \
+    ssh-keyscan github.com >> ~/.ssh/known_hosts && \
+    poetry install
 
 # [Optional] Allow the vscode user to pip install globally w/o sudo
 # ENV PIP_TARGET=/usr/local/pip-global
